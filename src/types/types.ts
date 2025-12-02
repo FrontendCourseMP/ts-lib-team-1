@@ -1,10 +1,7 @@
 
-// тип для самой формы
 export type TForm = HTMLFormElement;
-// тип для элемента формы(только те которые валидируем)
 export type TFormElement =  | HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
-// тип для массива атрибутов элемента формы
 export type TElementAttributes = {
         element: TFormElement;
         name?: string;
@@ -17,6 +14,22 @@ export type TElementAttributes = {
         maxLength?: number;
 }
 
-// тип для массива атрибутов для каждого из элементов формы
 export type TElementsAttributes = TElementAttributes[];
+
+export type TElementValidity = {
+        element: TFormElement;
+        validity: ValidityState;
+        isValid: boolean;
+        errors: string[];
+};
+
+export type TFormValidator = {
+        form: TForm;
+        elements: TElementsAttributes;
+        validate: () => boolean;
+        validateField: (name: string) => TElementValidity | null;
+        getAllValidity: () => TElementValidity[];
+};
+
+export type TCreateFormValidator = (form: TForm) => TFormValidator;
 
