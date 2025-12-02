@@ -21,7 +21,14 @@ export type TElementValidity = {
         validity: ValidityState;
         isValid: boolean;
         errors: string[];
+        value: unknown;
 };
+
+export type TFormValidationResult = {
+  isValid: boolean;
+  errors: Record<string, string[]>;
+}
+
 
 export type TFormValidator = {
         form: TForm;
