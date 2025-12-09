@@ -2,7 +2,7 @@ import type { TFieldValidator, TNumberValidator } from '../types/types';
 import { createStringFieldValidator } from './StringValidator';
 
 export function createNumberFieldValidator(field: HTMLInputElement): TFieldValidator & TNumberValidator {
-    const errors: string[] = [];
+    let errors: string[] = [];
 
     const validator: TFieldValidator & TNumberValidator = {
         element: field,
@@ -10,6 +10,7 @@ export function createNumberFieldValidator(field: HTMLInputElement): TFieldValid
             return createStringFieldValidator(this.element as HTMLInputElement | HTMLTextAreaElement);
         },
         number() {
+            errors = []; // Очищаем ошибки при начале новой цепочки валидации
             return this;
         },
         required(message?: string) {

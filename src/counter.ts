@@ -1,7 +1,4 @@
-import type { sum } from "./types/types";
-
-const sum: sum = function (a: number, b: number) {
+// Пример использования валидаторов
+export function sum(a: number, b: number): number {
   return a + b;
 }
-
-sum(1, 2)

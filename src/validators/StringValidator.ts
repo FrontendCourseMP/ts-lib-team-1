@@ -2,10 +2,13 @@ import type { TFieldValidator, TStringValidator } from '../types/types';
 import { createNumberFieldValidator } from './NumberValidator';
 
 export function createStringFieldValidator(field: HTMLInputElement | HTMLTextAreaElement): TFieldValidator & TStringValidator {
-    const errors: string[] = [];
+    let errors: string[] = [];
     const validator: TFieldValidator & TStringValidator = {
         element: field,
-        string() { return this; },
+        string() { 
+            errors = []; // Очищаем ошибки при начале новой цепочки валидации
+            return this; 
+        },
         number() { return createNumberFieldValidator(this.element as HTMLInputElement);},
         required(message?: string) {
             if (!field.value.trim()) errors.push(message || 'Поле обязательно');
@@ -36,6 +39,9 @@ export function createStringFieldValidator(field: HTMLInputElement | HTMLTextAre
             }
             return this;
         },
+        getErrors() {
+            return [...errors];
+        }
     };
     return validator;
 }
