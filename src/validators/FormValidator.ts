@@ -1,4 +1,4 @@
-import type { TFormValidator, TFieldValidator, TElementsAttributes } from '../types/types';
+import type { TFormValidator, TFieldValidator, TElementsAttributes, TElementValidity } from '../types/types';
 import { createStringFieldValidator } from './StringValidator';
 import { createNumberFieldValidator } from './NumberValidator';
 import { createArrayFieldValidator } from './ArrayValidator';
@@ -16,8 +16,17 @@ export function createFormValidator(form: HTMLFormElement): TFormValidator {
     function makeField(name: string): TFieldValidator {
         if (fields[name]) return fields[name];
 
-        const el = form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
+        const el = form.elements.namedItem(name);
         if (!el) throw new Error(`Поле ${name} не найдено`);
+
+        if (el instanceof RadioNodeList) {
+            const first = el[0] as HTMLInputElement | undefined;
+            if (first?.type === 'checkbox') {
+                const group = form.querySelectorAll(`input[name="${name}"]`) as NodeListOf<HTMLInputElement>;
+                fields[name] = createArrayFieldValidator(group);
+                return fields[name];
+            }
+        }
 
         if (el instanceof HTMLInputElement && el.type === 'number') {
             fields[name] = createNumberFieldValidator(el);
@@ -44,7 +53,7 @@ export function createFormValidator(form: HTMLFormElement): TFormValidator {
         return ok;
     }
 
-    function validateField(name: string) {
+    function validateField(name: string): TElementValidity | null {
         const fv = fields[name];
         if (!fv) return null;
         const errs = typeof fv.getErrors === 'function' ? fv.getErrors() : [];
@@ -57,8 +66,10 @@ export function createFormValidator(form: HTMLFormElement): TFormValidator {
         };
     }
 
-    function getAllValidity() {
-        return Object.keys(fields).map(name => validateField(name) as any);
+    function getAllValidity(): TElementValidity[] {
+        return Object.keys(fields)
+            .map(name => validateField(name))
+            .filter((validity): validity is TElementValidity => validity !== null);
     }
 
     return {
