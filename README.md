@@ -76,14 +76,6 @@
 - если поле не зарегистрировано — возвращает `null`
 - формат возвращаемого значения:
 
-```ts
-{
-  element: HTMLElement;
-  validity: ValidityState;
-  isValid: boolean;
-  errors: string[];
-  value: string;
-}
 ### getAllValidity(): TElementValidity[]
 
 Возвращает массив валидностей всех зарегистрированных полей.
