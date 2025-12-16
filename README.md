@@ -19,34 +19,6 @@
 
 ---
 
-## Пример использования
-
-```ts
-import { createFormValidator } from 'frm';
-
-const form = document.querySelector('form') as HTMLFormElement;
-const validator = createFormValidator(form);
-
-validator.field('name')
-  .string()
-  .required('Имя обязательно')
-  .minlength(2);
-
-validator.field('age')
-  .number()
-  .required()
-  .integer()
-  .min(18, 'Минимальный возраст — 18');
-
-validator.field('interests')
-  .string()
-  .required('Выберите интерес');
-
-const isValid = validator.validate();
-
-if (!isValid) {
-  console.log(validator.validateField('age')?.errors);
-}
 ## Архитектура
 
 - `createFormValidator` — центральный объект, управляющий валидацией формы.
