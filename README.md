@@ -261,4 +261,55 @@
 ## Итог
 
 `frm` — минималистичная библиотека валидации HTML-форм с явной регистрацией полей,
-цепочным API и предсказуемым поведением без скрытой логики.
+цепочным API и предсказуемым поведением без скрытой логики. 
+Дальше представлен пример использования frm.
+
+## Примеры использования `frm`
+
+```ts
+import { createFormValidator } from 'frm';
+
+// Получаем форму
+const form = document.querySelector('form') as HTMLFormElement;
+const validator = createFormValidator(form);
+
+// Валидация текстового поля
+validator.field('username')
+  .string()
+  .required('Имя пользователя обязательно')
+  .minlength(3, 'Минимум 3 символа')
+  .maxlength(20, 'Максимум 20 символов');
+
+// Валидация числового поля
+validator.field('age')
+  .number()
+  .required('Возраст обязателен')
+  .integer('Должно быть целым числом')
+  .min(18, 'Минимальный возраст — 18')
+  .max(100, 'Максимальный возраст — 100');
+
+// Валидация группы чекбоксов
+validator.field('interests')
+  .string() // или .number() если значения числовые
+  .required('Выберите хотя бы один интерес')
+  .custom(values => values.length <= 3, 'Не более 3 интересов');
+
+// Проверка всей формы
+const isValid = validator.validate();
+
+if (!isValid) {
+  // Получаем ошибки конкретного поля
+  console.log(validator.validateField('username')?.errors);
+
+  // Получаем все валидности
+  console.log(validator.getAllValidity());
+}
+
+// Переключение типа валидатора
+validator.field('score')
+  .number()
+  .required()
+  .min(0)
+  .max(100)
+  .string() // теперь можно применить строковые проверки
+  .minlength(1);
